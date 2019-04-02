@@ -1,0 +1,18 @@
+# *******************************************
+# TEMPLATE FILE for USER-DEFINED DATA
+# Data description MUST be placed within this HEADER area!
+# [see SAMPLE.txt file for an EXAMPLE]
+# TEXT FILE STRUCTURE:
+# No. of lines = no. of data points  
+# Col. 1: time [sec.] - ALWAYS!
+# Col. 2: time-dependent variable 1 (e.g. Bx component of the magnetic field)
+# Col. 3: time-dependent variable 2 (e.g. By component of the magnetic field)
+# Col. n: time-dependent variable N (e.g. Bz component of the magnetic field)
+# Horizontal separator: TAB
+# *******************************************
+t_1	var1_1	var2_1	varN_1
+t_2	var1_2	var2_2	varN_2
+t_3	var1_3	var2_3	varN_3
+t_4	var1_4	var2_4	varN_4
+t_5	var1_5	var2_5	varN_5
+...	...	...	...
