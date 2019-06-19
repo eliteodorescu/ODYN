@@ -28,9 +28,11 @@ os.getcwd()
 ######      READ DATA ALGORITHMS        ########################
 ################################################################
 
-def CLUSTER_DATA_CDF(default_data_path,input_file_name,satellite,probe):
-    input_file = [default_data_path+satellite+'/'+input_file_name]
-    #input_file = [input_file_name]    
+def CLUSTER_DATA_CDF(default_data_path,input_file_name,satellite,probe,automatic_analysis):
+    if not automatic_analysis:
+        input_file = [default_data_path+satellite+'/'+input_file_name]
+    elif automatic_analysis:
+        input_file = [input_file_name]    
     if not input_file:
         print ('DATA file path or name incorrect')
     else:
@@ -359,7 +361,7 @@ def DRAW_SF(PDF_var, time, scl, frequency, rank, structure_functions, flatness,s
 
     return fig
 
-def DRAW_PF(PF_var,time,scl,chosen_scl,frequency,rank,partition_functions,amplitude,TAUq,Dq,alpha,falpha,alpha_model,falpha_model,spacecraft):
+def DRAW_PF(PF_var,time,scl,chosen_scl,frequency,rank,rank_discr,partition_functions,amplitude,TAUq,Dq,alpha,falpha,alpha_model,falpha_model,spacecraft):
     
     fig=plt.figure('PF'+str(random.randint(1,100))+str(random.randint(1,100)),figsize = (10,10)) 
     mf=fig.add_axes([0.,0.,1.,1.])
@@ -369,9 +371,9 @@ def DRAW_PF(PF_var,time,scl,chosen_scl,frequency,rank,partition_functions,amplit
     m0.plot(time, PF_var)
     m0.xaxis.set_major_formatter(D.fmtb)    
     m1=fig.add_axes([0.15, 0.45, 0.65,0.3])    
-    for ih in range(0,len(rank),1): 
+    for ih in range(0,len(rank),int(1./rank_discr)): 
         m1.plot(np.log2(np.divide(scl,frequency)), np.log2(partition_functions[ih]), 's-', ms=6, mec='None', label=r'$\mathrm{q}$=%i'%(rank[ih]))
-    for iu in range(0,len(rank),1):
+    for iu in range(0,len(rank),int(1./rank_discr)):
         m1.plot(np.log2(np.divide(chosen_scl,frequency)), TAUq[iu]*np.log2(np.divide(chosen_scl,frequency))+amplitude[iu], 'k', linewidth=2.)                        
     m1.set_xlabel(r'$\mathrm{log_2 (l)}$', **D.lblpr)
     m1.set_ylabel(r'$\mathrm{log_2 \chi (q,l)}$', **D.lblpr)
@@ -388,7 +390,7 @@ def DRAW_PF(PF_var,time,scl,chosen_scl,frequency,rank,partition_functions,amplit
     m22.set_ylabel(r'$\mathrm{D_q}$', **D.lblpr)
     fig.suptitle(spacecraft+'  '+str(time[0])+' - '+str(time[-1]))
 
-    fig2=plt.figure('PFSpectrum',figsize = (7,7)) 
+    fig2=plt.figure('PFSpectrum'+str(random.randint(1,100))+str(random.randint(1,100)),figsize = (7,7)) 
     mf=fig2.add_axes([0.,0.,1.,1.])
     mf.axes.get_xaxis().set_visible(False)
     mf.axes.get_yaxis().set_visible(False)
