@@ -29,8 +29,8 @@ os.getcwd()
 ################################################################
 
 def CLUSTER_DATA_CDF(default_data_path,input_file_name,satellite,probe):
-    #input_file = [default_data_path+satellite+'/'+input_file_name]
-    input_file = [input_file_name]    
+    input_file = [default_data_path+satellite+'/'+input_file_name]
+    #input_file = [input_file_name]    
     if not input_file:
         print ('DATA file path or name incorrect')
     else:
@@ -178,7 +178,7 @@ def PLOT_DATA(DATA, time, spacecraft, labels=None):
             labels.append('var0')
                 
                 
-    fig = plt.figure('DATA PLOT '+str(random.randint(1,100)),figsize = (10,3))#dpi=200,
+    fig = plt.figure('DATA PLOT '+str(random.randint(1,100))+str(random.randint(1,100)),figsize = (10,3))#dpi=200,
     m1=fig.add_axes([0.,0.,1.,1.])
     m1.axes.get_xaxis().set_visible(False)
     m1.axes.get_yaxis().set_visible(False)
@@ -203,7 +203,7 @@ def PLOT_DATA(DATA, time, spacecraft, labels=None):
     return fig
     
 def PLOT_PLASMAVAR(time, vel_data, den, temp):    
-    figVDT = plt.figure(figsize = (10,3), facecolor=figfacecolor)
+    figVDT = plt.figure('PLASMAVAR'+str(random.randint(1,100))+str(random.randint(1,100)),figsize = (10,3))
     m1 = figVDT.add_subplot(311)
     #mp.plot(vel_time, vel_data, '+', label='v')
     m1.plot(time, vel_data, '+', label=r'$\mathrm{v_{tot}}$')
@@ -236,7 +236,7 @@ def PLOT_PLASMAVAR(time, vel_data, den, temp):
     #figVDT.savefig(fig_name)
     
 def DRAW_ALL_PSD(freqs,PSDs,time,data):
-    figPSD = plt.figure(figsize = (10,7))
+    figPSD = plt.figure('ALL_PSD'+str(random.randint(1,100))+str(random.randint(1,100)),figsize = (10,7))
     p0=figPSD.add_axes([0.,0.,1.,1.])
     p0.axes.get_xaxis().set_visible(False)
     p0.axes.get_yaxis().set_visible(False)
@@ -273,7 +273,7 @@ def DRAW_PDF(PDF_var, time, scl, frequency, bins_array, pdfs, flatness,spacecraf
     col={}
     for ic in range(len(drsc)):
       col[drsc[ic]]=c[ic]
-    fig=plt.figure('PDF',figsize = (10,12)) 
+    fig=plt.figure('PDF'+str(random.randint(1,100))+str(random.randint(1,100)),figsize = (10,12)) 
     mf=fig.add_axes([0.,0.,1.,1.])
     mf.axes.get_xaxis().set_visible(False)
     mf.axes.get_yaxis().set_visible(False)
@@ -318,7 +318,7 @@ def DRAW_PDF(PDF_var, time, scl, frequency, bins_array, pdfs, flatness,spacecraf
         
 def DRAW_SF(PDF_var, time, scl, frequency, rank, structure_functions, flatness,spacecraft):    
 
-    fig=plt.figure('SF',figsize = (10,13)) 
+    fig=plt.figure('SF'+str(random.randint(1,100))+str(random.randint(1,100)),figsize = (10,13)) 
     mf=fig.add_axes([0.,0.,1.,1.])
     mf.axes.get_xaxis().set_visible(False)
     mf.axes.get_yaxis().set_visible(False)        
@@ -359,6 +359,53 @@ def DRAW_SF(PDF_var, time, scl, frequency, rank, structure_functions, flatness,s
 
     return fig
 
+def DRAW_PF(PF_var,time,scl,chosen_scl,frequency,rank,partition_functions,amplitude,TAUq,Dq,alpha,falpha,alpha_model,falpha_model,spacecraft):
+    
+    fig=plt.figure('PF'+str(random.randint(1,100))+str(random.randint(1,100)),figsize = (10,10)) 
+    mf=fig.add_axes([0.,0.,1.,1.])
+    mf.axes.get_xaxis().set_visible(False)
+    mf.axes.get_yaxis().set_visible(False)
+    m0=fig.add_axes([0.15, 0.83, 0.65,0.07])
+    m0.plot(time, PF_var)
+    m0.xaxis.set_major_formatter(D.fmtb)    
+    m1=fig.add_axes([0.15, 0.45, 0.65,0.3])    
+    for ih in range(0,len(rank),1): 
+        m1.plot(np.log2(np.divide(scl,frequency)), np.log2(partition_functions[ih]), 's-', ms=6, mec='None', label=r'$\mathrm{q}$=%i'%(rank[ih]))
+    for iu in range(0,len(rank),1):
+        m1.plot(np.log2(np.divide(chosen_scl,frequency)), TAUq[iu]*np.log2(np.divide(chosen_scl,frequency))+amplitude[iu], 'k', linewidth=2.)                        
+    m1.set_xlabel(r'$\mathrm{log_2 (l)}$', **D.lblpr)
+    m1.set_ylabel(r'$\mathrm{log_2 \chi (q,l)}$', **D.lblpr)
+    l1=m1.legend(**D.legprops)
+    m2=fig.add_axes([0.15, 0.15, 0.25,0.2])    
+    for ihi in range(len(rank)): 
+        m2.plot(rank[ihi],TAUq[ihi], 'o-', ms=3, mec='r',mfc='None', mew=2)
+    m2.set_xlabel('q', **D.lblpr)
+    m2.set_ylabel(r'$\mathrm{\tau _q}$', **D.lblpr)
+    m22=fig.add_axes([0.55, 0.15, 0.25,0.2])    
+    for ihi in range(len(rank)): 
+        m22.plot(rank[ihi],Dq[ihi], 's-', ms=3, mec='k',mfc='None', mew=2)            
+    m22.set_xlabel('q', **D.lblpr)
+    m22.set_ylabel(r'$\mathrm{D_q}$', **D.lblpr)
+    fig.suptitle(spacecraft+'  '+str(time[0])+' - '+str(time[-1]))
+
+    fig2=plt.figure('PFSpectrum',figsize = (7,7)) 
+    mf=fig2.add_axes([0.,0.,1.,1.])
+    mf.axes.get_xaxis().set_visible(False)
+    mf.axes.get_yaxis().set_visible(False)
+    m0=fig2.add_axes([0.15, 0.83, 0.65,0.07])
+    m0.plot(time, PF_var)
+    m0.xaxis.set_major_formatter(D.fmtb) 
+    m1=fig2.add_axes([0.15, 0.15, 0.65,0.6])        
+    m1.plot(alpha,falpha, '+', ms=3, mec='k',mfc='None', mew=2)
+    m1.plot(alpha_model,falpha_model, 'r-')
+    m1.set_xlabel(r'$\mathrm{\alpha (q)}$', **D.lblpr)
+    m1.set_ylabel(r'$\mathrm{f(\alpha )}$', **D.lblpr)
+    fig2.suptitle(spacecraft+'  '+str(time[0])+' - '+str(time[-1]))
+    plt.show()
+    
+    return fig, fig2
+    
+    
 def YInterval(deltaY, lowlim, highlim):
   DeltaY=np.logical_and(np.greater(deltaY,lowlim), np.less(deltaY,highlim))
   return DeltaY
@@ -382,7 +429,7 @@ def DRAW_ROMA(ROMA_TS,time,PDFs,PDFbn,R_PDF,R_PDFbn,DY,RL_SF_DY,slopes_DY,SF_ROM
     polq2s1=np.poly1d(fitq2s1)
     logfitq2s1=lambda x: np.power(10, polq2s1(np.log10(x)))
     
-    fig=plt.figure('ROMA_PDF',figsize=(10,10))
+    fig=plt.figure('ROMA_PDF'+str(random.randint(1,100))+str(random.randint(1,100)),figsize=(10,10))
     mf=fig.add_axes([0.,0.,1.,1.])
     mf.axes.get_xaxis().set_visible(False)
     mf.axes.get_yaxis().set_visible(False)
@@ -396,6 +443,8 @@ def DRAW_ROMA(ROMA_TS,time,PDFs,PDFbn,R_PDF,R_PDFbn,DY,RL_SF_DY,slopes_DY,SF_ROM
     legpr = dict(loc='best', frameon=True, borderaxespad=0.)    
     lp1=m0.legend(**legpr)
     lp1.get_frame().set_color('None')
+    m0.set_title('(a)')        
+
         
     m1=fig.add_axes([0.6, 0.55, 0.33, 0.33])
     for iplot in range(len(q_all)):
@@ -406,7 +455,7 @@ def DRAW_ROMA(ROMA_TS,time,PDFs,PDFbn,R_PDF,R_PDFbn,DY,RL_SF_DY,slopes_DY,SF_ROM
     m1.set_ylabel(r'SF($\tau$,q)', **D.lblpr)
     m1.tick_params(axis='both', which='major', labelsize=12)
     l1=m1.legend(loc='best',frameon=False,borderaxespad=0.)
-    m1.set_title(r'$\mathrm{\Delta Y_{%i}=[%.2f,%.2f]}$'%(dy_ind+1,DY[dy_ind][0],DY[dy_ind][-1]))        
+    m1.set_title(r'$\mathrm{(b)\ \ \Delta Y_{%i}=[%.2f,%.2f]}$'%(dy_ind+1,DY[dy_ind][0],DY[dy_ind][-1]))        
 
     m2=fig.add_axes([0.1, 0.12, 0.33, 0.33])
     for qid in range(len(q_all)):
@@ -416,7 +465,7 @@ def DRAW_ROMA(ROMA_TS,time,PDFs,PDFbn,R_PDF,R_PDFbn,DY,RL_SF_DY,slopes_DY,SF_ROM
     m2.set_ylabel(r'$\zeta$(q)', **D.lblpr)
     l2=m2.legend(**D.legprops)
     l2.get_frame().set_color('None') 
-    m2.set_title(r'$\mathrm{\Delta Y_{%i}=[%.2f,%.2f]}$'%(dy_ind+1,DY[dy_ind][0],DY[dy_ind][-1]))    
+    m2.set_title(r'$\mathrm{(c)\ \ \Delta Y_{%i}=[%.2f,%.2f]}$'%(dy_ind+1,DY[dy_ind][0],DY[dy_ind][-1]))    
 
     m3=fig.add_axes([0.6, 0.12, 0.33, 0.33])      
     for jplot in range(len(DY)):
@@ -425,14 +474,19 @@ def DRAW_ROMA(ROMA_TS,time,PDFs,PDFbn,R_PDF,R_PDFbn,DY,RL_SF_DY,slopes_DY,SF_ROM
             m3.plot(q_all, q_all*ROMASols[jplot][0], ls='--', c=D.myc[jplot])
     m3.set_xlabel('q',**D.lblpr)
     m3.set_ylabel(r'$\zeta_{q}$',**D.lblpr)
-    m3.tick_params(axis='both', which='major', labelsize=12)
+    m3.tick_params(axis='both', which='major', labelsize=12)        
     l3=m3.legend(loc=2, frameon=False, borderaxespad=0.)
+    m3.set_title('(d)')    
     fig.suptitle(spacecraft+'  '+str(time[0])+' - '+str(time[-1]))        
     
-    figROMA=plt.figure('RescaledPDFs',figsize=(10,9))    
+    figROMA=plt.figure('RescaledPDFs'+str(random.randint(1,100))+str(random.randint(1,100)),figsize=(10,9))    
+    mr=figROMA.add_axes([0.,0.,1.,1.])
+    mr.axes.get_xaxis().set_visible(False)
+    mr.axes.get_yaxis().set_visible(False)    
     p4=figROMA.add_axes([0.1,0.8,0.8,0.1])
     p4.plot(time,ROMA_TS)
     p4.xaxis.set_major_formatter(D.fmtb)
+    p4.set_title('(a)')
     
     p2=figROMA.add_axes([0.1, 0.48, 0.8, 0.25])    
     for jplot in range(len(DY)):
@@ -447,7 +501,7 @@ def DRAW_ROMA(ROMA_TS,time,PDFs,PDFbn,R_PDF,R_PDFbn,DY,RL_SF_DY,slopes_DY,SF_ROM
     p2.set_xlabel('Y [nT]', fontsize=12)
     p2.set_ylabel('s(Y)', fontsize=12)
     p2.tick_params(axis='both', which='major', labelsize=12) 
-
+    p2.set_title('(b)')
     
     m11=figROMA.add_axes([0.1,0.15,0.35,0.25])
     for i in range(0,len(chscl),1):    
@@ -460,6 +514,7 @@ def DRAW_ROMA(ROMA_TS,time,PDFs,PDFbn,R_PDF,R_PDFbn,DY,RL_SF_DY,slopes_DY,SF_ROM
     m11.set_ylabel(r'$\mathrm{P(\delta B,\tau)}$', **D.lblpr)
     l11=m11.legend(loc='best', frameon=True, borderaxespad=0.)
     l11.get_frame().set_color('None')    
+    m11.set_title('(c)')
     
     p3=figROMA.add_axes([0.55,0.15,0.35,0.25])
     for ix in range(len(DY)):  
@@ -475,7 +530,8 @@ def DRAW_ROMA(ROMA_TS,time,PDFs,PDFbn,R_PDF,R_PDFbn,DY,RL_SF_DY,slopes_DY,SF_ROM
     titl1 =figROMA.add_axes([0.56, 0.16, 0.35, 0.25])
     for i in range(len(DY)):
         titl1.text(0.7, 0.85-0.1*i, llg[i], color=D.myc[i], **D.txtpr)
-    titl1.axis('off')    
+    titl1.axis('off')
+    p3.set_title('(d)')    
     figROMA.suptitle(spacecraft+'  '+str(time[0])+' - '+str(time[-1]))        
     plt.show()   
     
@@ -486,7 +542,7 @@ def DRAW_MI(MI,MI_Baseline,scales,resolution,compBaseline,time,spacecraft):
         v1 = np.logspace(np.log10(MI.min()), np.log10(MI.max()), 5, endpoint=True)
         vb = np.logspace(np.log10(np.min(np.nanmin(MI_Baseline))), np.log10(np.max(np.nanmax(MI_Baseline))), 5, endpoint=True)
 
-        fig = plt.figure('MI and Baseline', figsize = (10,4))
+        fig = plt.figure('MI and Baseline'+str(random.randint(1,100))+str(random.randint(1,100)), figsize = (10,4))
         mf=fig.add_axes([0.,0.,1.,1.])
         mf.axes.get_xaxis().set_visible(False)
         mf.axes.get_yaxis().set_visible(False)
@@ -791,11 +847,72 @@ def PDF(PDF_var, rank, scl, bin_no, compute_SF):
     elif not compute_SF:
         return histos, binc_array, Flatness, None      
 
-#def Wavelet()    
-#def PartitionFunctions()  
+#def Wavelet()  
+####PARTITION FUNCTIONS####
+def PartitionFunctions(PDF_var, frequency, rank, scl, choose_scl): 
+    #COMPUTE THE PARTITION FUNCTIONS
+    print ('COMPUTING PARTITION FUNCTIONS: IT MAY TAKE A WHILE')
+    DifferenceTS, AbsDifferenceTS,partial_probability,sum_D={},{},{},{}
+    partition_functions=np.zeros((len(rank),len(scl)),dtype=float)
+    for s in range(len(scl)):
+        ### COMPUTE TIME SERIES OF DIFFERENCES
+        DifferenceTS[s]= np.subtract(PDF_var[scl[s]:len(PDF_var)],PDF_var[0:len(PDF_var)-scl[s]])
+        DifferenceTS[s]=DifferenceTS[s][(np.abs(DifferenceTS[s])<9999.)& (np.abs(DifferenceTS[s])!=0.)]
+        ###NON_STANDARDIZED
+        AbsDifferenceTS[s]=np.abs(DifferenceTS[s])
+        sum_D[s]=np.nansum(AbsDifferenceTS[s])
+        lens=len(AbsDifferenceTS[s])
+        for qj in range(len(rank)):
+            prob_q,pfq=0,[]        
+            for j in range(0,math.floor(lens/scl[s])):
+                part_prob=np.nansum(np.divide(AbsDifferenceTS[s][j*scl[s]:(j+1)*scl[s]],sum_D[s]))               
+                prob_q=part_prob**rank[qj]
+                pfq.append(prob_q)
+            partition_functions[qj,s]=np.nansum(pfq) 
+            
+    #PARTITION FUNCTIONS FIT        
+    chosen_fit_scl=scl[choose_scl[0]:choose_scl[-1]]
+    fitfunc = lambda p, x: p[0] + p[1] * x
+    errfunc = lambda p, x, y: (y - fitfunc(p, x))
+    pinit = [1.0, -1.0]
+    powerlaw = lambda x, amp, index: amp * (x**index) 
 
+    #FIT THE PARTITION FUNCTIONS AND COMPUTE TAUq
+    out, param_final, tau_q, amp={}, {}, [], []
+    for iq in range(0,len(rank)):
+        out[iq] = optimize.leastsq(errfunc, pinit, args=(np.log2(np.divide(chosen_fit_scl,frequency)), np.log2(partition_functions[iq][choose_scl[0]:choose_scl[-1]])), full_output=1)
+        param_final[iq] = out[iq][0]
+        amp.append(param_final[iq][0])
+        tau_q.append(param_final[iq][1])
 
-#####ROMA###
+    #COMPUTE THE GENERALIZED DIMENSIONS
+    Dq={}
+    for tq in range(0,len(rank)):
+            Dq[tq]=(tau_q[tq]/(rank[tq]-1))
+    for key, value in Dq.items():
+        if value>9999.:
+            Dq[key] = np.nan
+
+    #COMPUTE THE MULTIFRACTAL SPECTRUM f(alpha)
+    alpha=np.diff(tau_q)/np.diff(rank)
+    f_alpha=np.multiply(rank[:-1],alpha)-tau_q[:-1]            
+
+    #SUPERPOSE p-model ON THE f(alpha) PLOT
+    p=0.4
+    rank2=np.arange(-10, 10, 0.1)
+    alpha_model, Dq_model= [],[]
+    for iqm in range(len(rank2)):
+        alpha_model.append(((p**rank2[iqm]) * np.log2(p) + ((1-p)**rank2[iqm])*np.log2(1-p)) /  (p**rank2[iqm] + (1-p)**rank2[iqm])*np.log2(0.5))
+        #if rank[iqm]!=1:
+        Dq_model.append((np.log2((p**rank2[iqm])+ (1-p)**rank2[iqm] ))/((rank2[iqm]-1)*np.log2(0.5)))
+    falpha_model=np.subtract(np.multiply(rank2,alpha_model),np.multiply((np.subtract(rank2,1)),Dq_model))
+
+    
+    
+    return partition_functions,tau_q,amp,Dq,alpha,f_alpha,alpha_model,falpha_model
+    
+
+#####ROMA####
 def Fluctuations(bvec, scl,rank):
     DY_all=np.empty((len(scl)), dtype=list)
     bin_no=200
