@@ -58,6 +58,8 @@ segment_magnitude		=512	#	Choose segment magnitude for Welch PSD in number of da
 overlap_percent			=0.9	#	Choose how much the segments overlap
 plot_PSD				=True	#	Choose whether to plot the PSDs computed for all 
 								#	chosen data variables (default is True)
+draw_single_PSD			=False	#	Choose whether to draw one or multiple PSD (for multiple)
+								#	variables on a single plot								
 save_individual_PSD		=False	#	Choose whether to save a PSD plot for each of the 
 								#	chosen data variables (default is False)
 save_allinone_PSD		=True	#	Choose whether to save all PSD displayed on a single 
@@ -97,9 +99,9 @@ rank_low				=-4		#	Input lowest integer value of the rank for which PFs
 rank_high				=5		#	Input highest value of the rank for which PFs 
 								#	will be computed (default is 5)	
 rank_discretisation		=0.5		#	Input the discretisation of q (default is 0.5)								
-scl_low					=1		#	Input lowest index (integer value) of the scale
+scl_low					=2		#	Input lowest index (integer value) of the scale
 								#	for which a linear regression will be performed on PFs  
-scl_high				=11		#	Input highest index (integer value) of the scale
+scl_high				=10		#	Input highest index (integer value) of the scale
 								#	for which a linear regression will be performed on PFs  
 								 											
 #####################################################################################
